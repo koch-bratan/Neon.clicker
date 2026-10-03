@@ -40,7 +40,7 @@
 
   #scoreBox {
     position: absolute;
-    top: 6vh;
+    top: 4vh;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
@@ -65,7 +65,7 @@
   }
 
   #scoreLabel {
-    font-size: 3.5vw;
+    font-size: 3vw;
     letter-spacing: 4px;
     color: #7cfaff;
     text-transform: uppercase;
@@ -73,14 +73,29 @@
     margin-top: -4px;
   }
 
+  #incomeLabel {
+    font-size: 3.2vw;
+    margin-top: 4px;
+    color: #7fff7f;
+    text-shadow: 0 0 8px #7fff7f, 0 0 16px #7fff7f;
+    font-weight: 700;
+    letter-spacing: 1px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  #incomeLabel.visible {
+    opacity: 1;
+  }
+
   #sphereWrap {
     position: relative;
-    width: 60vmin;
-    height: 60vmin;
+    width: 55vmin;
+    height: 55vmin;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 6vh;
+    margin-top: 10vh;
   }
 
   #sphere {
@@ -136,7 +151,7 @@
 
   #shopBtn {
     position: absolute;
-    bottom: 5vh;
+    bottom: 4vh;
     left: 50%;
     transform: translateX(-50%);
     padding: 18px 42px;
@@ -171,6 +186,7 @@
     justify-content: center;
     z-index: 100;
     padding: 20px;
+    overflow-y: auto;
   }
 
   #shopModal.open {
@@ -185,21 +201,22 @@
 
   #shopContent {
     width: 100%;
-    max-width: 480px;
+    max-width: 500px;
     background: rgba(20, 0, 40, 0.95);
     border: 2px solid #0ff;
     border-radius: 24px;
-    padding: 30px 24px;
+    padding: 26px 22px;
     box-shadow:
       0 0 30px #0ff,
       0 0 60px rgba(0,255,255,0.4),
       inset 0 0 30px rgba(0,255,255,0.15);
     text-align: center;
+    margin: auto;
   }
 
   #shopContent h2 {
-    font-size: 8vw;
-    margin-bottom: 24px;
+    font-size: 7.5vw;
+    margin-bottom: 20px;
     color: #0ff;
     text-shadow: 0 0 10px #0ff, 0 0 25px #0ff;
     letter-spacing: 3px;
@@ -209,36 +226,59 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 14px;
+    gap: 12px;
     background: rgba(0, 255, 255, 0.06);
     border: 1px solid rgba(0, 255, 255, 0.4);
     border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 16px;
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+
+  .upgrade.robot {
+    background: rgba(127, 255, 127, 0.06);
+    border-color: rgba(127, 255, 127, 0.4);
   }
 
   .upgrade-info {
     text-align: left;
     flex: 1;
+    min-width: 0;
   }
 
   .upgrade-title {
-    font-size: 4.5vw;
+    font-size: 4.4vw;
     font-weight: 700;
     color: #fff;
     text-shadow: 0 0 8px #0ff;
   }
 
+  .upgrade.robot .upgrade-title {
+    text-shadow: 0 0 8px #7fff7f;
+  }
+
   .upgrade-desc {
-    font-size: 3.5vw;
+    font-size: 3.3vw;
     color: #7cfaff;
     opacity: 0.85;
     margin-top: 4px;
   }
 
+  .upgrade.robot .upgrade-desc {
+    color: #b3ffb3;
+  }
+
+  .upgrade-count {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 3vw;
+    color: #7fff7f;
+    text-shadow: 0 0 6px #7fff7f;
+    font-weight: 700;
+  }
+
   .buyBtn {
-    padding: 12px 20px;
-    font-size: 3.8vw;
+    padding: 12px 18px;
+    font-size: 3.7vw;
     font-weight: 800;
     color: #0ff;
     background: rgba(0, 255, 255, 0.1);
@@ -251,6 +291,14 @@
     transition: transform 0.1s;
     font-family: inherit;
     touch-action: manipulation;
+  }
+
+  .buyBtn.robot {
+    color: #7fff7f;
+    border-color: #7fff7f;
+    background: rgba(127, 255, 127, 0.1);
+    box-shadow: 0 0 12px #7fff7f, inset 0 0 10px rgba(127,255,127,0.3);
+    text-shadow: 0 0 8px #7fff7f;
   }
 
   .buyBtn:disabled {
@@ -267,7 +315,7 @@
   }
 
   #closeBtn {
-    margin-top: 10px;
+    margin-top: 8px;
     padding: 14px 40px;
     font-size: 4vw;
     font-weight: 800;
@@ -283,16 +331,33 @@
     touch-action: manipulation;
   }
 
+  #resetBtn {
+    margin-top: 12px;
+    padding: 8px 20px;
+    font-size: 2.8vw;
+    color: #ff5555;
+    background: transparent;
+    border: 1px solid rgba(255, 85, 85, 0.4);
+    border-radius: 20px;
+    opacity: 0.6;
+    cursor: pointer;
+    font-family: inherit;
+    touch-action: manipulation;
+  }
+
   @media (orientation: landscape) {
     #score { font-size: 8vh; }
-    #scoreLabel { font-size: 2.2vh; }
-    #sphereWrap { width: 45vh; height: 45vh; margin-top: 2vh; }
+    #scoreLabel { font-size: 2vh; }
+    #incomeLabel { font-size: 2.1vh; }
+    #sphereWrap { width: 40vh; height: 40vh; margin-top: 4vh; }
     #shopBtn { font-size: 3vh; padding: 12px 30px; bottom: 3vh; }
-    #shopContent h2 { font-size: 5vh; }
-    .upgrade-title { font-size: 2.6vh; }
-    .upgrade-desc { font-size: 2vh; }
-    .buyBtn { font-size: 2.2vh; }
-    #closeBtn { font-size: 2.4vh; }
+    #shopContent h2 { font-size: 4.5vh; margin-bottom: 12px; }
+    .upgrade-title { font-size: 2.5vh; }
+    .upgrade-desc { font-size: 1.9vh; }
+    .upgrade-count { font-size: 1.7vh; }
+    .buyBtn { font-size: 2.1vh; padding: 10px 16px; }
+    #closeBtn { font-size: 2.3vh; }
+    #resetBtn { font-size: 1.6vh; }
   }
 </style>
 </head>
@@ -302,6 +367,7 @@
   <div id="scoreBox">
     <div id="score">0</div>
     <div id="scoreLabel">очки</div>
+    <div id="incomeLabel">+0 / сек</div>
   </div>
 
   <div id="sphereWrap">
@@ -323,52 +389,131 @@
       <button class="buyBtn" id="buyMulti" ontouchstart="window.__buyMulti && window.__buyMulti(event)" onmousedown="window.__buyMulti && window.__buyMulti(event)" onclick="window.__buyMulti && window.__buyMulti(event)">50</button>
     </div>
 
+    <div class="upgrade robot">
+      <div class="upgrade-info">
+        <div class="upgrade-title">🤖 Робот-кликер</div>
+        <div class="upgrade-desc">+1 очко в секунду</div>
+        <div class="upgrade-count" id="robotCount">Куплено: 0</div>
+      </div>
+      <button class="buyBtn robot" id="buyRobot" ontouchstart="window.__buyRobot && window.__buyRobot(event)" onmousedown="window.__buyRobot && window.__buyRobot(event)" onclick="window.__buyRobot && window.__buyRobot(event)">150</button>
+    </div>
+
     <button id="closeBtn" ontouchstart="window.__closeShop && window.__closeShop(event)" onmousedown="window.__closeShop && window.__closeShop(event)" onclick="window.__closeShop && window.__closeShop(event)">Закрыть</button>
+    <br>
+    <button id="resetBtn" ontouchstart="window.__reset && window.__reset(event)" onmousedown="window.__reset && window.__reset(event)" onclick="window.__reset && window.__reset(event)">Сбросить прогресс</button>
   </div>
 </div>
 
 <script>
 (function() {
+  // ===== Константы =====
+  var SAVE_KEY = 'neonClickerSave_v1';
+  var MULTI_COST = 50;
+  var ROBOT_COST = 150;
+
   // ===== Состояние игры =====
   var score = 0;
   var clickValue = 1;
   var multiOwned = false;
+  var robots = 0;          // кол-во роботов
+  var incomePerSec = 0;    // доход в секунду (роботы)
 
   // ===== DOM =====
-  var scoreEl   = document.getElementById('score');
-  var sphere    = document.getElementById('sphere');
-  var shopBtn   = document.getElementById('shopBtn');
-  var shopModal = document.getElementById('shopModal');
-  var closeBtn  = document.getElementById('closeBtn');
-  var buyMulti  = document.getElementById('buyMulti');
+  var scoreEl      = document.getElementById('score');
+  var incomeEl     = document.getElementById('incomeLabel');
+  var sphere       = document.getElementById('sphere');
+  var shopBtn      = document.getElementById('shopBtn');
+  var shopModal    = document.getElementById('shopModal');
+  var closeBtn     = document.getElementById('closeBtn');
+  var resetBtn     = document.getElementById('resetBtn');
+  var buyMulti     = document.getElementById('buyMulti');
+  var buyRobot     = document.getElementById('buyRobot');
+  var robotCountEl = document.getElementById('robotCount');
 
-  // ===== Защита от двойного срабатывания =====
-  var lastHitTime = 0;
-  function canFire() {
-    var now = Date.now();
-    if (now - lastHitTime < 350) return false;
-    lastHitTime = now;
-    return true;
+  // ===== СОХРАНЕНИЕ / ЗАГРУЗКА =====
+  function save() {
+    try {
+      var data = {
+        score: score,
+        clickValue: clickValue,
+        multiOwned: multiOwned,
+        robots: robots,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+    } catch (e) {
+      // localStorage может быть отключён (приватный режим)
+      console.warn('Не удалось сохранить:', e);
+    }
   }
 
-  // ===== Рендер счёта =====
-  function updateScore() {
-    scoreEl.textContent = score;
-    scoreEl.classList.add('pop');
-    setTimeout(function() { scoreEl.classList.remove('pop'); }, 120);
+  function load() {
+    try {
+      var raw = localStorage.getItem(SAVE_KEY);
+      if (!raw) return;
+      var data = JSON.parse(raw);
+      if (typeof data.score === 'number')     score = data.score;
+      if (typeof data.clickValue === 'number') clickValue = data.clickValue;
+      if (typeof data.multiOwned === 'boolean') multiOwned = data.multiOwned;
+      if (typeof data.robots === 'number')    robots = data.robots;
+    } catch (e) {
+      console.warn('Не удалось загрузить сохранение:', e);
+    }
+  }
+
+  function hardReset() {
+    if (!confirm('Точно сбросить весь прогресс? Это нельзя отменить.')) return;
+    try { localStorage.removeItem(SAVE_KEY); } catch (e) {}
+    score = 0;
+    clickValue = 1;
+    multiOwned = false;
+    robots = 0;
+    refreshAll();
+    save();
+  }
+
+  // ===== Рендер =====
+  function updateIncome() {
+    incomePerSec = robots; // каждый робот даёт +1/сек
+    if (incomePerSec > 0) {
+      incomeEl.textContent = '+' + incomePerSec + ' / сек';
+      incomeEl.classList.add('visible');
+    } else {
+      incomeEl.classList.remove('visible');
+    }
+  }
+
+  function updateScore(pop) {
+    scoreEl.textContent = Math.floor(score);
+    if (pop) {
+      scoreEl.classList.add('pop');
+      setTimeout(function() { scoreEl.classList.remove('pop'); }, 120);
+    }
+    refreshShop();
+  }
+
+  function refreshAll() {
+    updateScore(false);
+    updateIncome();
     refreshShop();
   }
 
   function refreshShop() {
+    // Мультиклик
     if (multiOwned) {
       buyMulti.disabled = true;
       buyMulti.classList.add('owned');
       buyMulti.textContent = 'Куплено';
     } else {
-      buyMulti.disabled = score < 50;
+      buyMulti.disabled = score < MULTI_COST;
       buyMulti.classList.remove('owned');
-      buyMulti.textContent = '50';
+      buyMulti.textContent = MULTI_COST;
     }
+
+    // Робот-кликер
+    robotCountEl.textContent = 'Куплено: ' + robots;
+    buyRobot.disabled = score < ROBOT_COST;
+    buyRobot.textContent = ROBOT_COST;
   }
 
   // ===== Искры =====
@@ -413,6 +558,15 @@
     }
   }
 
+  // ===== Защита от двойного срабатывания =====
+  var lastHitTime = 0;
+  function canFire() {
+    var now = Date.now();
+    if (now - lastHitTime < 350) return false;
+    lastHitTime = now;
+    return true;
+  }
+
   // ===== Клик по сфере =====
   function handleHit(e) {
     if (e) {
@@ -422,7 +576,7 @@
     if (!canFire()) return;
 
     score += clickValue;
-    updateScore();
+    updateScore(true);
 
     sphere.classList.add('hit');
     setTimeout(function() { sphere.classList.remove('hit'); }, 100);
@@ -435,6 +589,8 @@
     if (navigator.vibrate) {
       try { navigator.vibrate(15); } catch (err) {}
     }
+
+    save();
   }
 
   // ===== Магазин =====
@@ -461,21 +617,37 @@
       e.stopPropagation();
     }
     if (multiOwned) return;
-    if (score < 50) return;
-    score -= 50;
+    if (score < MULTI_COST) return;
+    score -= MULTI_COST;
     clickValue = 2;
     multiOwned = true;
-    updateScore();
+    updateScore(true);
+    save();
   }
 
-  // ===== Экспорт в window (для inline-обработчиков) =====
-  window.__hit = handleHit;
-  window.__openShop = openShop;
-  window.__closeShop = closeShop;
-  window.__buyMulti = buyMultiFunc;
+  function buyRobotFunc(e) {
+    if (e) {
+      if (e.cancelable) e.preventDefault();
+      e.stopPropagation();
+    }
+    if (score < ROBOT_COST) return;
+    score -= ROBOT_COST;
+    robots += 1;
+    updateScore(true);
+    updateIncome();
+    refreshShop();
+    save();
+  }
 
-  // ===== Дублирующие подписки через addEventListener =====
-  // (для браузеров, которые корректно работают с обычными слушателями)
+  // ===== Экспорт в window =====
+  window.__hit        = handleHit;
+  window.__openShop   = openShop;
+  window.__closeShop  = closeShop;
+  window.__buyMulti   = buyMultiFunc;
+  window.__buyRobot   = buyRobotFunc;
+  window.__reset      = hardReset;
+
+  // ===== Подписки =====
   function bind(el, fn) {
     if (!el) return;
     el.addEventListener('touchstart', fn, { passive: false });
@@ -487,8 +659,9 @@
   bind(shopBtn, openShop);
   bind(closeBtn, closeShop);
   bind(buyMulti, buyMultiFunc);
+  bind(buyRobot, buyRobotFunc);
+  bind(resetBtn, hardReset);
 
-  // Закрытие магазина по клику на фон
   shopModal.addEventListener('click', function(e) {
     if (e.target === shopModal) shopModal.classList.remove('open');
   });
@@ -500,8 +673,29 @@
     if (e.touches.length > 1) e.preventDefault();
   }, { passive: false });
 
+  // ===== АВТОКЛИКЕР =====
+  setInterval(function() {
+    if (robots > 0) {
+      score += robots;
+      // Плавное обновление без "pop"-эффекта
+      scoreEl.textContent = Math.floor(score);
+      refreshShop();
+    }
+  }, 1000);
+
+  // ===== Автосохранение каждые 5 секунд =====
+  setInterval(save, 5000);
+
+  // Сохраняем при уходе со страницы
+  window.addEventListener('beforeunload', save);
+  window.addEventListener('pagehide', save);
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') save();
+  });
+
   // ===== Инициализация =====
-  updateScore();
+  load();
+  refreshAll();
 })();
 </script>
 </body>
