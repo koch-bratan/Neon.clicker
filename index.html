@@ -62,7 +62,7 @@
       0 0 12px rgba(0, 255, 255, 0.6),
       inset 0 0 10px rgba(0, 255, 255, 0.3);
     text-shadow: 0 0 8px #0ff;
-    z-index: 30;
+    z-index: 9999;
     cursor: pointer;
     transition: transform 0.15s, opacity 0.15s, box-shadow 0.15s;
     touch-action: manipulation;
@@ -410,10 +410,7 @@
 <body>
 
 <!-- Кнопка звука в верхнем правом углу -->
-<button id="soundBtn"
-        ontouchstart="window.__toggleSound && window.__toggleSound(event)"
-        onmousedown="window.__toggleSound && window.__toggleSound(event)"
-        onclick="window.__toggleSound && window.__toggleSound(event)">🔊</button>
+<button id="soundBtn">🔊</button>
 
 <div id="game">
   <div id="scoreBox">
@@ -423,10 +420,10 @@
   </div>
 
   <div id="sphereWrap">
-    <div id="sphere" ontouchstart="window.__hit && window.__hit(event)" onmousedown="window.__hit && window.__hit(event)"></div>
+    <div id="sphere"></div>
   </div>
 
-  <button id="shopBtn" ontouchstart="window.__openShop && window.__openShop(event)" onmousedown="window.__openShop && window.__openShop(event)" onclick="window.__openShop && window.__openShop(event)">✦ Магазин</button>
+  <button id="shopBtn">✦ Магазин</button>
 </div>
 
 <div id="shopModal">
@@ -438,7 +435,7 @@
         <div class="upgrade-title">Мультиклик</div>
         <div class="upgrade-desc">+1 к клику (итого +2)</div>
       </div>
-      <button class="buyBtn" id="buyMulti" ontouchstart="window.__buyMulti && window.__buyMulti(event)" onmousedown="window.__buyMulti && window.__buyMulti(event)" onclick="window.__buyMulti && window.__buyMulti(event)">50</button>
+      <button class="buyBtn" id="buyMulti">50</button>
     </div>
 
     <div class="upgrade robot">
@@ -447,12 +444,12 @@
         <div class="upgrade-desc">+1 очко в секунду</div>
         <div class="upgrade-count" id="robotCount">Куплено: 0</div>
       </div>
-      <button class="buyBtn robot" id="buyRobot" ontouchstart="window.__buyRobot && window.__buyRobot(event)" onmousedown="window.__buyRobot && window.__buyRobot(event)" onclick="window.__buyRobot && window.__buyRobot(event)">150</button>
+      <button class="buyBtn robot" id="buyRobot">150</button>
     </div>
 
-    <button id="closeBtn" ontouchstart="window.__closeShop && window.__closeShop(event)" onmousedown="window.__closeShop && window.__closeShop(event)" onclick="window.__closeShop && window.__closeShop(event)">Закрыть</button>
+    <button id="closeBtn">Закрыть</button>
     <br>
-    <button id="resetBtn" ontouchstart="window.__reset && window.__reset(event)" onmousedown="window.__reset && window.__reset(event)" onclick="window.__reset && window.__reset(event)">Сбросить прогресс</button>
+    <button id="resetBtn">Сбросить прогресс</button>
   </div>
 </div>
 
@@ -462,8 +459,7 @@
   var SAVE_KEY = 'neonClickerSave_v1';
   var MULTI_COST = 50;
   var ROBOT_COST = 150;
-  var SOUND_URL = 'sound.mp3'; // файл в корне репозитория (с маленькой буквы)
-  var SOUND_POOL_SIZE = 6;     // 6 копий — хватает на самые частые клики
+  var SOUND_URL = 'sound.mp3';
 
   // ===== Состояние игры =====
   var score = 0;
@@ -486,58 +482,57 @@
   var robotCountEl = document.getElementById('robotCount');
   var soundBtn     = document.getElementById('soundBtn');
 
-  // ===== АУДИО: пул копий =====
-  // Каждая копия — отдельный <audio>. При клике берём следующую,
-  // сбрасываем currentTime = 0 и играем. Это позволяет кликать чаще,
-  // чем длится сам звук, без «проглатывания» и лагов.
-  var soundPool = [];
-  var soundIndex = 0;
+  // ===== АУДИО: один объект, каждый клик перезапускает его с нуля =====
+  // Это устраняет наложение звуков и эхо при частых кликах.
+  var clickSound = null;
 
-  function initSoundPool() {
-    for (var i = 0; i < SOUND_POOL_SIZE; i++) {
-      var a = new Audio(SOUND_URL);
-      a.preload = 'auto';
-      a.volume = 0.75;
-      try { a.load(); } catch (e) {}
-      soundPool.push(a);
+  function initSound() {
+    try {
+      clickSound = new Audio(SOUND_URL);
+      clickSound.preload = 'auto';
+      clickSound.volume = 0.75;
+      clickSound.load();
+    } catch (e) {
+      clickSound = null;
     }
   }
 
   function playClickSound() {
     if (!soundEnabled) return;
-    if (soundPool.length === 0) return;
-    var a = soundPool[soundIndex];
-    soundIndex = (soundIndex + 1) % soundPool.length;
+    if (!clickSound) return;
     try {
-      // Сброс к началу — чтобы звук играл сразу, без задержки
-      a.currentTime = 0;
-      var p = a.play();
+      // 1) Полностью останавливаем предыдущий звук
+      clickSound.pause();
+      // 2) Сбрасываем на нулевую секунду
+      clickSound.currentTime = 0;
+      // 3) Играем заново
+      var p = clickSound.play();
       if (p && p.catch) p.catch(function(){});
     } catch (e) {}
   }
 
-  // «Разогрев» звука при первом касании (обход autoplay-блокировки)
+  // Разблокировка аудио при первом касании (обход autoplay-политики браузеров)
   var audioUnlocked = false;
   function unlockAudio() {
     if (audioUnlocked) return;
     audioUnlocked = true;
+    if (!clickSound) return;
     try {
-      var a = soundPool[0];
-      if (a) {
-        a.volume = 0;
-        a.currentTime = 0;
-        var p = a.play();
-        if (p && p.then) {
-          p.then(function() {
-            a.pause();
-            a.currentTime = 0;
-            a.volume = 0.75;
-          }).catch(function(){ a.volume = 0.75; });
-        } else {
-          a.pause();
-          a.currentTime = 0;
-          a.volume = 0.75;
-        }
+      var prevVol = clickSound.volume;
+      clickSound.volume = 0;
+      var p = clickSound.play();
+      if (p && p.then) {
+        p.then(function() {
+          clickSound.pause();
+          clickSound.currentTime = 0;
+          clickSound.volume = prevVol;
+        }).catch(function() {
+          clickSound.volume = prevVol;
+        });
+      } else {
+        clickSound.pause();
+        clickSound.currentTime = 0;
+        clickSound.volume = prevVol;
       }
     } catch (e) {}
   }
@@ -681,11 +676,11 @@
     }
   }
 
-  // ===== Защита от двойного срабатывания =====
+  // ===== Антидребезг для сферы =====
   var lastHitTime = 0;
   function canFire() {
     var now = Date.now();
-    if (now - lastHitTime < 40) return false; // минимальный антидребезг
+    if (now - lastHitTime < 40) return false;
     lastHitTime = now;
     return true;
   }
@@ -766,24 +761,42 @@
     save();
   }
 
-  // ===== Кнопка звука =====
+  // ===== Кнопка звука с антидребезгом (ключевой фикс!) =====
+  var lastSoundToggleTime = 0;
   function toggleSound(e) {
     if (e) {
       if (e.cancelable) e.preventDefault();
       e.stopPropagation();
     }
+    // Защита от 4-кратного срабатывания за одно касание
+    var now = Date.now();
+    if (now - lastSoundToggleTime < 350) return;
+    lastSoundToggleTime = now;
+
     soundEnabled = !soundEnabled;
     refreshSoundBtn();
-    if (navigator.vibrate) {
-      try { navigator.vibrate(20); } catch (err) {}
+
+    // Если выключаем — сразу останавливаем звук, чтобы он не доигрывал
+    if (!soundEnabled && clickSound) {
+      try {
+        clickSound.pause();
+        clickSound.currentTime = 0;
+      } catch (err) {}
     }
+
+    // Если включаем — разблокируем аудио
     if (soundEnabled) {
       unlockAudio();
     }
+
+    if (navigator.vibrate) {
+      try { navigator.vibrate(20); } catch (err) {}
+    }
+
     save();
   }
 
-  // ===== Экспорт в window =====
+  // ===== Экспорт в window (не нужен, но оставлен для совместимости) =====
   window.__hit         = handleHit;
   window.__openShop    = openShop;
   window.__closeShop   = closeShop;
@@ -838,12 +851,12 @@
   });
 
   // ===== Инициализация =====
-  initSoundPool();
+  initSound();
   load();
   refreshSoundBtn();
   refreshAll();
 
-  // Разблокируем звук при первом же касании в любом месте экрана
+  // Разблокировка аудио при первом касании в любом месте
   document.addEventListener('touchstart', unlockAudio, { once: true, passive: true });
   document.addEventListener('mousedown', unlockAudio, { once: true });
 })();
